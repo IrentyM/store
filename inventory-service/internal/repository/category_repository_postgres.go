@@ -5,10 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 	"inventory-service/internal/domain"
-	"inventory-service/internal/usecase"
 )
 
-type categoryRepo struct {
+type categoryRepository struct {
 	db    *sql.DB
 	table string
 }
@@ -17,14 +16,14 @@ const (
 	category_table = "categories"
 )
 
-func NewCategoryRepository(db *sql.DB) usecase.CategoryRepository {
-	return &categoryRepo{
+func NewCategoryRepository(db *sql.DB) *categoryRepository {
+	return &categoryRepository{
 		db:    db,
 		table: category_table,
 	}
 }
 
-func (r *categoryRepo) Create(ctx context.Context, category domain.Category) error {
+func (r *categoryRepository) Create(ctx context.Context, category domain.Category) error {
 	query := `
         INSERT INTO ` + r.table + ` (id, name, description)
         VALUES ($1, $2, $3)
@@ -33,7 +32,7 @@ func (r *categoryRepo) Create(ctx context.Context, category domain.Category) err
 	return err
 }
 
-func (r *categoryRepo) GetByID(ctx context.Context, id int) (*domain.Category, error) {
+func (r *categoryRepository) GetByID(ctx context.Context, id int) (*domain.Category, error) {
 	query := `
         SELECT id, name, description
         FROM ` + r.table + `
@@ -53,7 +52,7 @@ func (r *categoryRepo) GetByID(ctx context.Context, id int) (*domain.Category, e
 	return &category, nil
 }
 
-func (r *categoryRepo) Update(ctx context.Context, id int, category domain.Category) error {
+func (r *categoryRepository) Update(ctx context.Context, id int, category domain.Category) error {
 	query := `
         UPDATE ` + r.table + `
         SET name = $1, description = $2
@@ -63,7 +62,7 @@ func (r *categoryRepo) Update(ctx context.Context, id int, category domain.Categ
 	return err
 }
 
-func (r *categoryRepo) Delete(ctx context.Context, id int) error {
+func (r *categoryRepository) Delete(ctx context.Context, id int) error {
 	query := `
         DELETE FROM ` + r.table + `
         WHERE id = $1
@@ -72,7 +71,7 @@ func (r *categoryRepo) Delete(ctx context.Context, id int) error {
 	return err
 }
 
-func (r *categoryRepo) List(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]*domain.Category, error) {
+func (r *categoryRepository) List(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]*domain.Category, error) {
 	query := `
         SELECT id, name, description
         FROM ` + r.table + `

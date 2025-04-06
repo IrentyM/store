@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"inventory-service/internal/domain"
 	"inventory-service/internal/repository/dao"
-	"inventory-service/internal/usecase"
 )
 
-type productRepo struct {
+type productRepository struct {
 	db    *sql.DB
 	table string
 }
@@ -18,14 +17,14 @@ const (
 	product_table = "product"
 )
 
-func NewProductRepository(db *sql.DB) usecase.ProductRepository {
-	return &productRepo{
+func NewProductRepository(db *sql.DB) *productRepository {
+	return &productRepository{
 		db:    db,
 		table: product_table,
 	}
 }
 
-func (r *productRepo) Create(ctx context.Context, product domain.Product) error {
+func (r *productRepository) Create(ctx context.Context, product domain.Product) error {
 	object := dao.ToProduct(product)
 	query := `
         INSERT INTO ` + r.table + ` (id, name, description, price, category_id, stock)
@@ -35,7 +34,7 @@ func (r *productRepo) Create(ctx context.Context, product domain.Product) error 
 	return err
 }
 
-func (r *productRepo) GetByID(ctx context.Context, id int) (*domain.Product, error) {
+func (r *productRepository) GetByID(ctx context.Context, id int) (*domain.Product, error) {
 	query := `
         SELECT id, name, description, price, category_id, stock, created_at, updated_at
         FROM ` + r.table + `
@@ -66,7 +65,7 @@ func (r *productRepo) GetByID(ctx context.Context, id int) (*domain.Product, err
 	return &domainProduct, nil
 }
 
-func (r *productRepo) Update(ctx context.Context, id int, product domain.Product) error {
+func (r *productRepository) Update(ctx context.Context, id int, product domain.Product) error {
 	object := dao.ToProduct(product)
 	query := `
         UPDATE ` + r.table + `
@@ -77,7 +76,7 @@ func (r *productRepo) Update(ctx context.Context, id int, product domain.Product
 	return err
 }
 
-func (r *productRepo) Delete(ctx context.Context, id int) error {
+func (r *productRepository) Delete(ctx context.Context, id int) error {
 	query := `
         DELETE FROM ` + r.table + `
         WHERE id = $1
@@ -86,7 +85,7 @@ func (r *productRepo) Delete(ctx context.Context, id int) error {
 	return err
 }
 
-func (r *productRepo) List(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]*domain.Product, error) {
+func (r *productRepository) List(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]*domain.Product, error) {
 	query := `
         SELECT id, name, description, price, category_id, stock, created_at, updated_at
         FROM ` + r.table + `

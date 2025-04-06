@@ -3,7 +3,7 @@ CREATE SCHEMA IF NOT EXISTS inventory;
 
 -- Таблица категорий
 CREATE TABLE inventory.categories (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT
 );
@@ -13,11 +13,11 @@ CREATE INDEX idx_categories_name ON inventory.categories (name);
 
 -- Таблица продуктов
 CREATE TABLE inventory.products (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DECIMAL(12, 2) NOT NULL CHECK (price >= 0),
-    category_id UUID NOT NULL REFERENCES inventory.categories(id) ON DELETE RESTRICT,
+    category_id INT NOT NULL REFERENCES inventory.categories(id) ON DELETE RESTRICT,
     stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP

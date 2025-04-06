@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"inventory-service/internal/domain"
 	"inventory-service/internal/repository/dao"
+	"inventory-service/internal/usecase"
 )
 
 type productRepo struct {
@@ -17,7 +18,7 @@ const (
 	product_table = "product"
 )
 
-func NewProductRepository(db *sql.DB) ProductRepository {
+func NewProductRepository(db *sql.DB) usecase.ProductRepository {
 	return &productRepo{
 		db:    db,
 		table: product_table,

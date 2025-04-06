@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"inventory-service/internal/domain"
+	"inventory-service/internal/usecase"
 )
 
 type categoryRepo struct {
@@ -16,7 +17,7 @@ const (
 	category_table = "categories"
 )
 
-func NewCategoryRepository(db *sql.DB) CategoryRepository {
+func NewCategoryRepository(db *sql.DB) usecase.CategoryRepository {
 	return &categoryRepo{
 		db:    db,
 		table: category_table,

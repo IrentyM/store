@@ -11,9 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type server struct {
+	router *gin.Engine
+	cfg    *Config
+}
+
 func StartServer() {
 	// Initialize database connection
-	database, err := db.NewPostgresConnection()
+	database, err := db.PostgresConnection()
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}

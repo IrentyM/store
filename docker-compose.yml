@@ -2,12 +2,20 @@ version: '3.8'
 
 services:
   inventory-service:
-    build: .
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
     container_name: inventory-service
     ports:
       - "8070:8070"
     depends_on:
       - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: inventory
     env_file:
       - .env
 

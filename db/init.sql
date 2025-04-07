@@ -2,20 +2,16 @@
 CREATE SCHEMA IF NOT EXISTS inventory;
 CREATE SCHEMA IF NOT EXISTS orders;
 
--- Создаем пользователей для каждого сервиса (опционально, но рекомендуется)
-CREATE ROLE inventory_service WITH LOGIN PASSWORD 'inventory_password';
-CREATE ROLE order_service WITH LOGIN PASSWORD 'order_password';
-
 -- Назначаем права на схемы
-GRANT USAGE ON SCHEMA inventory TO inventory_service;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA inventory TO inventory_service;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA inventory TO inventory_service;
+GRANT USAGE ON SCHEMA inventory TO ecommerce_service;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA inventory TO ecommerce_service;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA inventory TO ecommerce_service;
 
-GRANT USAGE ON SCHEMA orders TO order_service;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA orders TO order_service;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA orders TO order_service;
+GRANT USAGE ON SCHEMA orders TO ecommerce_service;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA orders TO ecommerce_service;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA orders TO ecommerce_service;
 
--- Таблица категорий (остается без изменений)
+-- Таблица категорий
 CREATE TABLE inventory.categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -24,7 +20,7 @@ CREATE TABLE inventory.categories (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Таблица продуктов (добавляем поле для блокировки при заказе)
+-- Таблица продуктов
 CREATE TABLE inventory.products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -37,12 +33,12 @@ CREATE TABLE inventory.products (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Представление для доступного количества (stock - reserved)
+-- Представление доступных товаров
 CREATE VIEW inventory.available_products AS
 SELECT id, name, (stock - reserved) as available 
 FROM inventory.products;
 
--- Триггеры (остаются без изменений)
+-- Функция и триггеры обновления updated_at
 CREATE OR REPLACE FUNCTION inventory.update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -96,7 +92,7 @@ CREATE TABLE orders.order_items (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Функция для обновления updated_at
+-- Функция обновления updated_at
 CREATE OR REPLACE FUNCTION orders.update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -105,17 +101,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Триггер для заказов
+-- Триггер на обновление заказов
 CREATE TRIGGER update_orders_updated_at
 BEFORE UPDATE ON orders.orders
 FOR EACH ROW EXECUTE FUNCTION orders.update_updated_at_column();
 
--- Индексы для ускорения запросов
+-- Индексы
 CREATE INDEX idx_orders_user_id ON orders.orders(user_id);
 CREATE INDEX idx_orders_status ON orders.orders(status);
 CREATE INDEX idx_order_items_order_id ON orders.order_items(order_id);
 CREATE INDEX idx_order_items_product_id ON orders.order_items(product_id);
 
+-- Функция резервирования товара
 CREATE OR REPLACE FUNCTION inventory.reserve_product(
     product_id INT,
     quantity INT
@@ -132,5 +129,5 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Даем доступ Order Service только к этой функции
-GRANT EXECUTE ON FUNCTION inventory.reserve_product(INT, INT) TO order_service;
+-- Даем доступ к функции
+GRANT EXECUTE ON FUNCTION inventory.reserve_product(INT, INT) TO ecommerce_service;

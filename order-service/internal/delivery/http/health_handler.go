@@ -7,5 +7,5 @@ import (
 )
 
 func GetHealth(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "Order service is healthy"})
+	c.JSON(http.StatusOK, gin.H{"message": "OK"})
 }

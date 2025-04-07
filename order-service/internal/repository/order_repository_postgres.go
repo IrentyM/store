@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"order-service/internal/domain"
 	"order-service/internal/repository/dao"
+	"strconv"
 )
 
 type orderRepository struct {
@@ -98,12 +99,12 @@ func (r *orderRepository) List(ctx context.Context, filter map[string]interface{
 
 	// Dynamically build the WHERE clause based on the filter
 	for key, value := range filter {
-		query += ` AND ` + key + ` = $` + string(argIndex)
+		query += ` AND ` + key + ` = $` + strconv.Itoa(argIndex)
 		args = append(args, value)
 		argIndex++
 	}
 
-	query += ` LIMIT $` + string(argIndex) + ` OFFSET $` + string(argIndex+1)
+	query += ` LIMIT $` + strconv.Itoa(argIndex) + ` OFFSET $` + strconv.Itoa(argIndex+1)
 	args = append(args, limit, offset)
 
 	rows, err := r.db.QueryContext(ctx, query, args...)

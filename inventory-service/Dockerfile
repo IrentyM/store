@@ -2,10 +2,10 @@ FROM golang:1.23
 
 WORKDIR /app
 
-COPY inventory-service/ . 
+COPY . . 
 
 RUN go build -o inventory-service ./cmd/main.go
 
-EXPOSE 8070
+EXPOSE 8010
 
 CMD ["./inventory-service"]

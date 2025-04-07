@@ -37,6 +37,11 @@ services:
       DB_NAME: ecommerce
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8010/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   order-service:
     build:
@@ -59,7 +64,12 @@ services:
       INVENTORY_SERVICE_URL: http://inventory-service:8010
     env_file:
       - .env
-  
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8020/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   api-gateway:
     build:
       context: ./api-gateway

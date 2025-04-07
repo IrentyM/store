@@ -14,7 +14,7 @@ type productRepository struct {
 }
 
 const (
-	product_table = "product"
+	product_table = "inventory.products"
 )
 
 func NewProductRepository(db *sql.DB) *productRepository {

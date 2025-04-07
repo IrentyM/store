@@ -2,15 +2,6 @@
 CREATE SCHEMA IF NOT EXISTS inventory;
 CREATE SCHEMA IF NOT EXISTS orders;
 
--- Назначаем права на схемы
-GRANT USAGE ON SCHEMA inventory TO ecommerce_service;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA inventory TO ecommerce_service;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA inventory TO ecommerce_service;
-
-GRANT USAGE ON SCHEMA orders TO ecommerce_service;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA orders TO ecommerce_service;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA orders TO ecommerce_service;
-
 -- Таблица категорий
 CREATE TABLE inventory.categories (
     id SERIAL PRIMARY KEY,
@@ -129,5 +120,3 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Даем доступ к функции
-GRANT EXECUTE ON FUNCTION inventory.reserve_product(INT, INT) TO ecommerce_service;

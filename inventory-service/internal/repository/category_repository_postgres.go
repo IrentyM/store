@@ -13,7 +13,7 @@ type categoryRepository struct {
 }
 
 const (
-	category_table = "categories"
+	category_table = "inventory.categories"
 )
 
 func NewCategoryRepository(db *sql.DB) *categoryRepository {

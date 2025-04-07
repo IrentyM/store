@@ -13,7 +13,7 @@ type orderItemRepository struct {
 }
 
 const (
-	orderItemTable = "order_items"
+	orderItemTable = "orders.order_items"
 )
 
 func NewOrderItemRepository(db *sql.DB) *orderItemRepository {

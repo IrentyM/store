@@ -14,7 +14,7 @@ type orderRepository struct {
 }
 
 const (
-	orderTable = "orders"
+	orderTable = "orders.orders"
 )
 
 func NewOrderRepository(db *sql.DB) *orderRepository {

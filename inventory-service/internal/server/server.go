@@ -3,45 +3,40 @@ package server
 import (
 	"log"
 
-	handler "inventory-service/internal/delivery/http"
-	"inventory-service/internal/repository"
-	"inventory-service/internal/usecase"
-	"inventory-service/pkg/db"
-
 	"github.com/gin-gonic/gin"
 )
+
+type Server interface {
+	Start() error
+}
 
 type server struct {
 	router *gin.Engine
 	cfg    *Config
 }
 
-func StartServer() {
-	// Initialize database connection
-	database, err := db.PostgresConnection()
-	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+func NewServer(cfg *Config) Server {
+	r := gin.Default()
+
+	return &server{
+		router: r,
+		cfg:    cfg,
 	}
-	defer database.Close()
+}
 
-	// Initialize repositories
-	categoryRepo := repository.NewCategoryRepository(database)
-	productRepo := repository.NewProductRepository(database)
-
-	// Initialize use cases
-	categoryUseCase := usecase.NewCategoryUseCase(categoryRepo)
-	productUseCase := usecase.NewProductUseCase(productRepo)
-
-	// Initialize Gin router
-	router := gin.Default()
-
-	// Register handlers
-	handler.NewCategoryHandler(router, *categoryUseCase)
-	handler.NewProductHandler(router, *productUseCase)
+func (s *server) Start() error {
+	// Register routes
+	if err := s.registerRoutes(); err != nil {
+		log.Printf("Error registering routes: %v", err)
+		return err
+	}
 
 	// Start the server
-	log.Println("Starting server on port 8080...")
-	if err := router.Run(":8080"); err != nil {
+	log.Printf("Starting server on port %s...", s.cfg.Port)
+	if err := s.router.Run(s.cfg.Port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
+		return err
 	}
+
+	return nil
 }

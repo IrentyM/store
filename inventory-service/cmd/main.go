@@ -1,10 +1,16 @@
 package main
 
 import (
+	"log"
+
 	"inventory-service/internal/server"
 )
 
 func main() {
-	// Start the server
-	server.StartServer()
+	config := server.GetConfig()
+
+	srv := server.NewServer(config)
+	if err := srv.Start(); err != nil {
+		log.Fatalf("Failed to start the server: %v", err)
+	}
 }

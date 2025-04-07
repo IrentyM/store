@@ -10,24 +10,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ProductHandler struct {
+type ProductHandler interface {
+	CreateProduct(c *gin.Context)
+	GetProductByID(c *gin.Context)
+	UpdateProduct(c *gin.Context)
+	DeleteProduct(c *gin.Context)
+	ListProducts(c *gin.Context)
+}
+
+type productHandler struct {
 	useCase usecase.ProductUseCase
 }
 
-func NewProductHandler(router *gin.Engine, useCase usecase.ProductUseCase) {
-	handler := &ProductHandler{useCase: useCase}
-
-	productRoutes := router.Group("/products")
-	{
-		productRoutes.POST("/", handler.CreateProduct)
-		productRoutes.GET("/:id", handler.GetProductByID)
-		productRoutes.PUT("/:id", handler.UpdateProduct)
-		productRoutes.DELETE("/:id", handler.DeleteProduct)
-		productRoutes.GET("/", handler.ListProducts)
-	}
+func NewProductHandler(useCase usecase.ProductUseCase) ProductHandler {
+	return &productHandler{useCase: useCase}
 }
 
-func (h *ProductHandler) CreateProduct(c *gin.Context) {
+func (h *productHandler) CreateProduct(c *gin.Context) {
 	var req dto.CreateProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
@@ -43,7 +42,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-func (h *ProductHandler) GetProductByID(c *gin.Context) {
+func (h *productHandler) GetProductByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
@@ -64,7 +63,7 @@ func (h *ProductHandler) GetProductByID(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (h *ProductHandler) UpdateProduct(c *gin.Context) {
+func (h *productHandler) UpdateProduct(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
@@ -86,7 +85,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (h *ProductHandler) DeleteProduct(c *gin.Context) {
+func (h *productHandler) DeleteProduct(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
@@ -101,7 +100,7 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (h *ProductHandler) ListProducts(c *gin.Context) {
+func (h *productHandler) ListProducts(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
 

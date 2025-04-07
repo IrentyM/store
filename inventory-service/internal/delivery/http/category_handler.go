@@ -10,24 +10,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type CategoryHandler struct {
+type CategoryHandler interface {
+	CreateCategory(c *gin.Context)
+	GetCategoryByID(c *gin.Context)
+	UpdateCategory(c *gin.Context)
+	DeleteCategory(c *gin.Context)
+	ListCategories(c *gin.Context)
+}
+
+type categoryHandler struct {
 	useCase usecase.CategoryUseCase
 }
 
-func NewCategoryHandler(router *gin.Engine, useCase usecase.CategoryUseCase) {
-	handler := &CategoryHandler{useCase: useCase}
-
-	categoryRoutes := router.Group("/categories")
-	{
-		categoryRoutes.POST("/", handler.CreateCategory)
-		categoryRoutes.GET("/:id", handler.GetCategoryByID)
-		categoryRoutes.PUT("/:id", handler.UpdateCategory)
-		categoryRoutes.DELETE("/:id", handler.DeleteCategory)
-		categoryRoutes.GET("/", handler.ListCategories)
-	}
+func NewCategoryHandler(useCase usecase.CategoryUseCase) CategoryHandler {
+	return &categoryHandler{useCase: useCase}
 }
 
-func (h *CategoryHandler) CreateCategory(c *gin.Context) {
+func (h *categoryHandler) CreateCategory(c *gin.Context) {
 	var req dto.CreateCategoryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
@@ -43,7 +42,7 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 	c.Status(http.StatusCreated)
 }
 
-func (h *CategoryHandler) GetCategoryByID(c *gin.Context) {
+func (h *categoryHandler) GetCategoryByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category ID"})
@@ -64,7 +63,7 @@ func (h *CategoryHandler) GetCategoryByID(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
+func (h *categoryHandler) UpdateCategory(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category ID"})
@@ -86,7 +85,7 @@ func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
+func (h *categoryHandler) DeleteCategory(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category ID"})
@@ -101,7 +100,7 @@ func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (h *CategoryHandler) ListCategories(c *gin.Context) {
+func (h *categoryHandler) ListCategories(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	offset, _ := strconv.Atoi(c.DefaultQuery("offset", "0"))
 

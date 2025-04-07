@@ -59,6 +59,22 @@ services:
       INVENTORY_SERVICE_URL: http://inventory-service:8010
     env_file:
       - .env
+  
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      inventory-service:
+        condition: service_healthy
+      order-service:
+        condition: service_healthy
+    environment:
+      INVENTORY_SERVICE_URL: http://inventory-service:8010
+      ORDER_SERVICE_URL: http://order-service:8020
 
 volumes:
   pgdata:

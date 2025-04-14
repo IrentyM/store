@@ -5,7 +5,7 @@ import (
 )
 
 type Category struct {
-	ID          int    `db:"id"`
+	ID          int32  `db:"id"`
 	Name        string `db:"name"`
 	Description string `db:"description"`
 }

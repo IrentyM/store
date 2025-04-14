@@ -6,12 +6,12 @@ import (
 )
 
 type Product struct {
-	ID          int       `db:"id"`
+	ID          int32     `db:"id"`
 	Name        string    `db:"name"`
 	Description string    `db:"description"`
 	Price       float64   `db:"price"`
-	CategoryID  int       `db:"category_id"`
-	Stock       int       `db:"stock"`
+	CategoryID  int32     `db:"category_id"`
+	Stock       int32     `db:"stock"`
 	CreatedAt   time.Time `db:"created_at"`
 	UpdatedAt   time.Time `db:"updated_at"`
 }

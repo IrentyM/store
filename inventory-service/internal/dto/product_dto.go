@@ -9,8 +9,8 @@ type CreateProductRequest struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
-	CategoryID  int     `json:"category_id"`
-	Stock       int     `json:"stock"`
+	CategoryID  int32   `json:"category_id"`
+	Stock       int32   `json:"stock"`
 }
 
 func (r *CreateProductRequest) ToDomain() domain.Product {
@@ -24,12 +24,12 @@ func (r *CreateProductRequest) ToDomain() domain.Product {
 }
 
 type ProductResponse struct {
-	ID          int       `json:"id"`
+	ID          int32     `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Price       float64   `json:"price"`
-	CategoryID  int       `json:"category_id"`
-	Stock       int       `json:"stock"`
+	CategoryID  int32     `json:"category_id"`
+	Stock       int32     `json:"stock"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }

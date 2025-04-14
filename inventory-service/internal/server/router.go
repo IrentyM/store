@@ -1,7 +1,7 @@
 package server
 
 import (
-	handler "inventory-service/internal/delivery/http"
+	handler "inventory-service/internal/adapter/http"
 	"inventory-service/internal/repository"
 	"inventory-service/internal/usecase"
 	"inventory-service/pkg/db"

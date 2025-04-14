@@ -3,7 +3,7 @@ package domain
 import "fmt"
 
 type Category struct {
-	ID         int    `db:"id"`
+	ID         int32  `db:"id"`
 	Name       string `db:"name"`
 	Dscription string `db:"description"`
 }

@@ -17,7 +17,7 @@ func (r *CreateCategoryRequest) ToDomain() domain.Category {
 }
 
 type CategoryResponse struct {
-	ID          int    `json:"id"`
+	ID          int32  `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }

@@ -3,9 +3,9 @@ package domain
 import "fmt"
 
 type Category struct {
-	ID         int32  `db:"id"`
-	Name       string `db:"name"`
-	Dscription string `db:"description"`
+	ID          int32  `db:"id"`
+	Name        string `db:"name"`
+	Description string `db:"description"`
 }
 
 func (c *Category) Validate() error {

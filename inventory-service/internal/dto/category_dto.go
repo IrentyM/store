@@ -11,8 +11,8 @@ type CreateCategoryRequest struct {
 
 func (r *CreateCategoryRequest) ToDomain() domain.Category {
 	return domain.Category{
-		Name:       r.Name,
-		Dscription: r.Description,
+		Name:        r.Name,
+		Description: r.Description,
 	}
 }
 
@@ -26,6 +26,6 @@ func NewCategoryResponse(category domain.Category) CategoryResponse {
 	return CategoryResponse{
 		ID:          category.ID,
 		Name:        category.Name,
-		Description: category.Dscription,
+		Description: category.Description,
 	}
 }

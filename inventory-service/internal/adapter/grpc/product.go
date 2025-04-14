@@ -1,22 +1,30 @@
-package grpc
+package grpchandler
 
 import (
 	"context"
 	"inventory-service/internal/domain"
 	"inventory-service/internal/usecase"
-	inventory "inventory-service/proto"
+	productproto "inventory-service/proto/product"
 )
 
-type InventoryServer struct {
-	inventory.UnimplementedInventoryServiceServer
+type ProductServer interface {
+	CreateProduct(ctx context.Context, req *productproto.CreateProductRequest) (*productproto.ProductResponse, error)
+	GetProductByID(ctx context.Context, req *productproto.GetProductRequest) (*productproto.ProductResponse, error)
+	UpdateProduct(ctx context.Context, req *productproto.UpdateProductRequest) (*productproto.ProductResponse, error)
+	DeleteProduct(ctx context.Context, req *productproto.DeleteProductRequest) (*productproto.Empty, error)
+	ListProducts(ctx context.Context, req *productproto.ListProductsRequest) (*productproto.ListProductsResponse, error)
+}
+
+type productServer struct {
+	productproto.UnimplementedProductServiceServer
 	productUseCase usecase.ProductUseCase
 }
 
-func NewInventoryServer(productUseCase usecase.ProductUseCase) *InventoryServer {
-	return &InventoryServer{productUseCase: productUseCase}
+func NewProductServer(productUseCase usecase.ProductUseCase) *productServer {
+	return &productServer{productUseCase: productUseCase}
 }
 
-func (s *InventoryServer) CreateProduct(ctx context.Context, req *inventory.CreateProductRequest) (*inventory.ProductResponse, error) {
+func (s *productServer) CreateProduct(ctx context.Context, req *productproto.CreateProductRequest) (*productproto.ProductResponse, error) {
 	product := domain.Product{
 		Name:        req.Name,
 		Description: req.Description,
@@ -29,7 +37,7 @@ func (s *InventoryServer) CreateProduct(ctx context.Context, req *inventory.Crea
 		return nil, err
 	}
 
-	return &inventory.ProductResponse{
+	return &productproto.ProductResponse{
 		Id:          product.ID,
 		Name:        product.Name,
 		Description: product.Description,
@@ -41,7 +49,7 @@ func (s *InventoryServer) CreateProduct(ctx context.Context, req *inventory.Crea
 	}, nil
 }
 
-func (s *InventoryServer) GetProductByID(ctx context.Context, req *inventory.GetProductRequest) (*inventory.ProductResponse, error) {
+func (s *productServer) GetProductByID(ctx context.Context, req *productproto.GetProductRequest) (*productproto.ProductResponse, error) {
 	product, err := s.productUseCase.GetProductByID(ctx, int(req.Id))
 	if err != nil {
 		return nil, err
@@ -50,7 +58,7 @@ func (s *InventoryServer) GetProductByID(ctx context.Context, req *inventory.Get
 		return nil, nil
 	}
 
-	return &inventory.ProductResponse{
+	return &productproto.ProductResponse{
 		Id:          product.ID,
 		Name:        product.Name,
 		Description: product.Description,
@@ -62,7 +70,7 @@ func (s *InventoryServer) GetProductByID(ctx context.Context, req *inventory.Get
 	}, nil
 }
 
-func (s *InventoryServer) UpdateProduct(ctx context.Context, req *inventory.UpdateProductRequest) (*inventory.ProductResponse, error) {
+func (s *productServer) UpdateProduct(ctx context.Context, req *productproto.UpdateProductRequest) (*productproto.ProductResponse, error) {
 	product := domain.Product{
 		ID:          req.Id,
 		Name:        req.Name,
@@ -76,7 +84,7 @@ func (s *InventoryServer) UpdateProduct(ctx context.Context, req *inventory.Upda
 		return nil, err
 	}
 
-	return &inventory.ProductResponse{
+	return &productproto.ProductResponse{
 		Id:          product.ID,
 		Name:        product.Name,
 		Description: product.Description,
@@ -88,22 +96,22 @@ func (s *InventoryServer) UpdateProduct(ctx context.Context, req *inventory.Upda
 	}, nil
 }
 
-func (s *InventoryServer) DeleteProduct(ctx context.Context, req *inventory.DeleteProductRequest) (*inventory.Empty, error) {
+func (s *productServer) DeleteProduct(ctx context.Context, req *productproto.DeleteProductRequest) (*productproto.Empty, error) {
 	if err := s.productUseCase.DeleteProduct(ctx, int(req.Id)); err != nil {
 		return nil, err
 	}
-	return &inventory.Empty{}, nil
+	return &productproto.Empty{}, nil
 }
 
-func (s *InventoryServer) ListProducts(ctx context.Context, req *inventory.ListProductsRequest) (*inventory.ListProductsResponse, error) {
+func (s *productServer) ListProducts(ctx context.Context, req *productproto.ListProductsRequest) (*productproto.ListProductsResponse, error) {
 	products, err := s.productUseCase.ListProducts(ctx, nil, int(req.Limit), int(req.Offset))
 	if err != nil {
 		return nil, err
 	}
 
-	var productResponses []*inventory.ProductResponse
+	var productResponses []*productproto.ProductResponse
 	for _, product := range products {
-		productResponses = append(productResponses, &inventory.ProductResponse{
+		productResponses = append(productResponses, &productproto.ProductResponse{
 			Id:          product.ID,
 			Name:        product.Name,
 			Description: product.Description,
@@ -115,7 +123,7 @@ func (s *InventoryServer) ListProducts(ctx context.Context, req *inventory.ListP
 		})
 	}
 
-	return &inventory.ListProductsResponse{
+	return &productproto.ListProductsResponse{
 		Products: productResponses,
 		Total:    int32(len(productResponses)),
 	}, nil

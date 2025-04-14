@@ -33,7 +33,7 @@ func GetDefaultConfig() *Config {
 		DBport:     "5432",
 		DBuser:     "postgres",
 		DBpassword: "postgres",
-		DBname:     "inventory",
+		DBname:     "store",
 	}
 }
 

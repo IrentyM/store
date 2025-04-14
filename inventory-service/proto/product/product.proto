@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-option go_package = ".;inventory";
+option go_package = ".;productproto";
 
-package inventory;
+package productproto;
 
-service InventoryService {
+service ProductService {
   rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
   rpc GetProductByID(GetProductRequest) returns (ProductResponse);
   rpc UpdateProduct(UpdateProductRequest) returns (ProductResponse);

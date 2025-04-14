@@ -28,7 +28,7 @@ func (r *categoryRepository) Create(ctx context.Context, category domain.Categor
         INSERT INTO ` + r.table + ` (id, name, description)
         VALUES ($1, $2, $3)
     `
-	_, err := r.db.ExecContext(ctx, query, category.ID, category.Name, category.Dscription)
+	_, err := r.db.ExecContext(ctx, query, category.ID, category.Name, category.Description)
 	return err
 }
 
@@ -41,7 +41,7 @@ func (r *categoryRepository) GetByID(ctx context.Context, id int) (*domain.Categ
 	row := r.db.QueryRowContext(ctx, query, id)
 
 	var category domain.Category
-	err := row.Scan(&category.ID, &category.Name, &category.Dscription)
+	err := row.Scan(&category.ID, &category.Name, &category.Description)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil // No category found
@@ -58,7 +58,7 @@ func (r *categoryRepository) Update(ctx context.Context, id int, category domain
         SET name = $1, description = $2
         WHERE id = $3
     `
-	_, err := r.db.ExecContext(ctx, query, category.Name, category.Dscription, id)
+	_, err := r.db.ExecContext(ctx, query, category.Name, category.Description, id)
 	return err
 }
 
@@ -99,7 +99,7 @@ func (r *categoryRepository) List(ctx context.Context, filter map[string]interfa
 	var categories []*domain.Category
 	for rows.Next() {
 		var category domain.Category
-		err := rows.Scan(&category.ID, &category.Name, &category.Dscription)
+		err := rows.Scan(&category.ID, &category.Name, &category.Description)
 		if err != nil {
 			return nil, err
 		}

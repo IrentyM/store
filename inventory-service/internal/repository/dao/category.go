@@ -14,14 +14,14 @@ func ToCategory(category domain.Category) Category {
 	return Category{
 		ID:          category.ID,
 		Name:        category.Name,
-		Description: category.Dscription,
+		Description: category.Description,
 	}
 }
 
 func FromCategory(category Category) domain.Category {
 	return domain.Category{
-		ID:         category.ID,
-		Name:       category.Name,
-		Dscription: category.Description,
+		ID:          category.ID,
+		Name:        category.Name,
+		Description: category.Description,
 	}
 }

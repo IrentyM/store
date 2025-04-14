@@ -12,7 +12,7 @@ type OrderItemRepository interface {
 }
 
 type OrderRepository interface {
-	Create(ctx context.Context, order domain.Order) (int, error)
+	Create(ctx context.Context, order domain.Order) (int32, error)
 	GetByID(ctx context.Context, id int) (*domain.Order, error)
 	Update(ctx context.Context, id int, order domain.Order) error
 	Delete(ctx context.Context, id int) error

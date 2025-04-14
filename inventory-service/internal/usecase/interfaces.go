@@ -8,7 +8,7 @@ import (
 type CategoryRepository interface {
 	Create(ctx context.Context, category domain.Category) error
 	GetByID(ctx context.Context, id int) (*domain.Category, error)
-	Update(ctx context.Context, id int, category domain.Category) error
+	Update(ctx context.Context, id int32, category domain.Category) error
 	Delete(ctx context.Context, id int) error
 	List(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]*domain.Category, error)
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"inventory-service/internal/adapter/grpc"
+	grpchandler "inventory-service/internal/adapter/grpc"
 	"inventory-service/internal/repository"
 	"inventory-service/internal/server"
 	"inventory-service/internal/usecase"
@@ -11,21 +11,20 @@ import (
 )
 
 func main() {
-	// Load configuration
 	config := server.GetConfig()
 
-	// Connect to the database
 	database, err := db.PostgresConnection(config.DBhost, config.DBport, config.DBuser, config.DBpassword, config.DBname)
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 
-	// Initialize repositories and use cases
 	productRepo := repository.NewProductRepository(database)
-	productUseCase := usecase.NewProductUseCase(productRepo)
+	categoryRepo := repository.NewCategoryRepository(database)
 
-	// Start the gRPC server
-	grpcServer := grpc.NewServer(*productUseCase)
+	productUseCase := usecase.NewProductUseCase(productRepo)
+	categoryUseCase := usecase.NewCategoryUseCase(categoryRepo)
+
+	grpcServer := grpchandler.NewServer(*productUseCase, *categoryUseCase)
 	if err := grpcServer.Run(config.Port); err != nil {
 		log.Fatalf("Failed to start the gRPC server: %v", err)
 	}

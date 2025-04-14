@@ -6,8 +6,8 @@ import (
 )
 
 type Order struct {
-	ID            int       `db:"id"`
-	UserID        int       `db:"user_id"`
+	ID            int32     `db:"id"`
+	UserID        int32     `db:"user_id"`
 	Status        string    `db:"status"`
 	PaymentStatus string    `db:"payment_status"`
 	TotalAmount   float64   `db:"total_amount"`

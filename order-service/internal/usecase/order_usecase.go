@@ -5,19 +5,19 @@ import (
 	"order-service/internal/domain"
 )
 
-type orderUseCase struct {
+type OrderUseCase struct {
 	orderRepo     OrderRepository
 	orderItemRepo OrderItemRepository
 }
 
-func NewOrderUseCase(orderRepo OrderRepository, orderItemRepo OrderItemRepository) *orderUseCase {
-	return &orderUseCase{
+func NewOrderUseCase(orderRepo OrderRepository, orderItemRepo OrderItemRepository) *OrderUseCase {
+	return &OrderUseCase{
 		orderRepo:     orderRepo,
 		orderItemRepo: orderItemRepo,
 	}
 }
 
-func (uc *orderUseCase) CreateOrder(ctx context.Context, order domain.Order, items []domain.OrderItem) (int, error) {
+func (uc *OrderUseCase) CreateOrder(ctx context.Context, order domain.Order, items []domain.OrderItem) (int32, error) {
 	if err := order.Validate(); err != nil {
 		return 0, err
 	}
@@ -43,7 +43,7 @@ func (uc *orderUseCase) CreateOrder(ctx context.Context, order domain.Order, ite
 	return orderID, nil
 }
 
-func (uc *orderUseCase) GetOrderByID(ctx context.Context, id int) (*domain.Order, []domain.OrderItem, error) {
+func (uc *OrderUseCase) GetOrderByID(ctx context.Context, id int) (*domain.Order, []domain.OrderItem, error) {
 	order, err := uc.orderRepo.GetByID(ctx, id)
 	if err != nil {
 		return nil, nil, err
@@ -60,7 +60,7 @@ func (uc *orderUseCase) GetOrderByID(ctx context.Context, id int) (*domain.Order
 	return order, items, nil
 }
 
-func (uc *orderUseCase) UpdateOrder(ctx context.Context, id int, order domain.Order) error {
+func (uc *OrderUseCase) UpdateOrder(ctx context.Context, id int, order domain.Order) error {
 	if err := order.Validate(); err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (uc *orderUseCase) UpdateOrder(ctx context.Context, id int, order domain.Or
 	return uc.orderRepo.Update(ctx, id, order)
 }
 
-func (uc *orderUseCase) DeleteOrder(ctx context.Context, id int) error {
+func (uc *OrderUseCase) DeleteOrder(ctx context.Context, id int) error {
 	if err := uc.orderItemRepo.DeleteByOrderID(ctx, id); err != nil {
 		return err
 	}
@@ -76,6 +76,6 @@ func (uc *orderUseCase) DeleteOrder(ctx context.Context, id int) error {
 	return uc.orderRepo.Delete(ctx, id)
 }
 
-func (uc *orderUseCase) ListOrders(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]domain.Order, error) {
+func (uc *OrderUseCase) ListOrders(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]domain.Order, error) {
 	return uc.orderRepo.List(ctx, filter, limit, offset)
 }

@@ -52,7 +52,7 @@ func (r *categoryRepository) GetByID(ctx context.Context, id int) (*domain.Categ
 	return &category, nil
 }
 
-func (r *categoryRepository) Update(ctx context.Context, id int, category domain.Category) error {
+func (r *categoryRepository) Update(ctx context.Context, id int32, category domain.Category) error {
 	query := `
         UPDATE ` + r.table + `
         SET name = $1, description = $2

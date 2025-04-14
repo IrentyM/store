@@ -24,7 +24,7 @@ func (uc *CategoryUseCase) GetCategoryByID(ctx context.Context, id int) (*domain
 	return uc.repo.GetByID(ctx, id)
 }
 
-func (uc *CategoryUseCase) UpdateCategory(ctx context.Context, id int, category domain.Category) error {
+func (uc *CategoryUseCase) UpdateCategory(ctx context.Context, id int32, category domain.Category) error {
 	if err := category.Validate(); err != nil {
 		return err
 	}

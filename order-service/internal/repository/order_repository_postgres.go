@@ -24,14 +24,14 @@ func NewOrderRepository(db *sql.DB) *orderRepository {
 	}
 }
 
-func (r *orderRepository) Create(ctx context.Context, order domain.Order) (int, error) {
+func (r *orderRepository) Create(ctx context.Context, order domain.Order) (int32, error) {
 	object := dao.ToOrder(order)
 	query := `
         INSERT INTO ` + r.table + ` (user_id, status, payment_status, total_amount)
         VALUES ($1, $2, $3, $4)
         RETURNING id
     `
-	var id int
+	var id int32
 	err := r.db.QueryRowContext(ctx, query, object.UserID, object.Status, object.PaymentStatus, object.TotalAmount).Scan(&id)
 	if err != nil {
 		return 0, err

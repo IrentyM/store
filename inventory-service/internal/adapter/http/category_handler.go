@@ -77,7 +77,7 @@ func (h *categoryHandler) UpdateCategory(c *gin.Context) {
 	}
 
 	category := req.ToDomain()
-	if err := h.useCase.UpdateCategory(c.Request.Context(), id, category); err != nil {
+	if err := h.useCase.UpdateCategory(c.Request.Context(), int32(id), category); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

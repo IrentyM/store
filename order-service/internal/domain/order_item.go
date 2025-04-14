@@ -3,10 +3,10 @@ package domain
 import "fmt"
 
 type OrderItem struct {
-	ID              int     `json:"id"`
-	OrderID         int     `json:"order_id"`
-	ProductID       int     `json:"product_id"`
-	Quantity        int     `json:"quantity"`
+	ID              int32   `json:"id"`
+	OrderID         int32   `json:"order_id"`
+	ProductID       int32   `json:"product_id"`
+	Quantity        int32   `json:"quantity"`
 	PriceAtPurchase float64 `json:"price_at_purchase"`
 }
 

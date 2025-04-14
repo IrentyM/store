@@ -2,7 +2,8 @@ package grpchandler
 
 import (
 	"inventory-service/internal/usecase"
-	inventory "inventory-service/proto"
+	categoryproto "inventory-service/proto/category"
+	productproto "inventory-service/proto/product"
 	"log"
 	"net"
 
@@ -14,10 +15,16 @@ type Server struct {
 	grpcServer *grpc.Server
 }
 
-func NewServer(ProductUsecase usecase.ProductUseCase) *Server {
+func NewServer(productUsecase usecase.ProductUseCase, categoryUsecase usecase.CategoryUseCase) *Server {
 	grpcServer := grpc.NewServer()
-	handler := NewInventoryServer(ProductUsecase)
-	inventory.RegisterInventoryServiceServer(grpcServer, handler)
+
+	// Register ProductService
+	productHandler := NewProductServer(productUsecase)
+	productproto.RegisterProductServiceServer(grpcServer, productHandler)
+
+	// Register CategoryService
+	categoryHandler := NewCategoryServer(categoryUsecase)
+	categoryproto.RegisterCategoryServiceServer(grpcServer, categoryHandler)
 
 	// Enable reflection
 	reflection.Register(grpcServer)

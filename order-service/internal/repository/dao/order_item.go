@@ -5,10 +5,10 @@ import (
 )
 
 type OrderItem struct {
-	ID              int     `db:"id"`
-	OrderID         int     `db:"order_id"`
-	ProductID       int     `db:"product_id"`
-	Quantity        int     `db:"quantity"`
+	ID              int32   `db:"id"`
+	OrderID         int32   `db:"order_id"`
+	ProductID       int32   `db:"product_id"`
+	Quantity        int32   `db:"quantity"`
 	PriceAtPurchase float64 `db:"price_at_purchase"`
 }
 

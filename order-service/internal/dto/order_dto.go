@@ -6,7 +6,7 @@ import (
 )
 
 type CreateOrderRequest struct {
-	UserID        int                  `json:"user_id"`
+	UserID        int32                `json:"user_id"`
 	Status        domain.OrderStatus   `json:"status"`
 	PaymentStatus domain.PaymentStatus `json:"payment_status"`
 	TotalAmount   float64              `json:"total_amount"`
@@ -14,8 +14,8 @@ type CreateOrderRequest struct {
 }
 
 type OrderItemRequest struct {
-	ProductID       int     `json:"product_id"`
-	Quantity        int     `json:"quantity"`
+	ProductID       int32   `json:"product_id"`
+	Quantity        int32   `json:"quantity"`
 	PriceAtPurchase float64 `json:"price_at_purchase"`
 }
 
@@ -40,8 +40,8 @@ func (r *CreateOrderRequest) ToDomain() (domain.Order, []domain.OrderItem) {
 }
 
 type OrderResponse struct {
-	ID            int                  `json:"id"`
-	UserID        int                  `json:"user_id"`
+	ID            int32                `json:"id"`
+	UserID        int32                `json:"user_id"`
 	Status        domain.OrderStatus   `json:"status"`
 	PaymentStatus domain.PaymentStatus `json:"payment_status"`
 	TotalAmount   float64              `json:"total_amount"`
@@ -51,9 +51,9 @@ type OrderResponse struct {
 }
 
 type OrderItemResponse struct {
-	ID              int     `json:"id"`
-	ProductID       int     `json:"product_id"`
-	Quantity        int     `json:"quantity"`
+	ID              int32   `json:"id"`
+	ProductID       int32   `json:"product_id"`
+	Quantity        int32   `json:"quantity"`
 	PriceAtPurchase float64 `json:"price_at_purchase"`
 }
 

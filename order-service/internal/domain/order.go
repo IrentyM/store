@@ -22,8 +22,8 @@ const (
 )
 
 type Order struct {
-	ID            int           `json:"id"`
-	UserID        int           `json:"user_id"`
+	ID            int32         `json:"id"`
+	UserID        int32         `json:"user_id"`
 	Status        OrderStatus   `json:"status"`
 	PaymentStatus PaymentStatus `json:"payment_status"`
 	TotalAmount   float64       `json:"total_amount"`

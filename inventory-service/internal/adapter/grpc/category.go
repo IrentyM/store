@@ -49,7 +49,7 @@ func (s *CategoryServer) GetCategoryByID(ctx context.Context, req *categoryproto
 
 func (s *CategoryServer) UpdateCategory(ctx context.Context, req *categoryproto.UpdateCategoryRequest) (*categoryproto.CategoryResponse, error) {
 	category := domain.Category{
-		ID:          int(req.Id),
+		ID:          req.Id,
 		Name:        req.Name,
 		Description: req.Description,
 	}
@@ -76,7 +76,7 @@ func (s *CategoryServer) DeleteCategory(ctx context.Context, req *categoryproto.
 }
 
 func (s *CategoryServer) ListCategories(ctx context.Context, req *categoryproto.ListCategoriesRequest) (*categoryproto.ListCategoriesResponse, error) {
-	categories, err := s.categoryUseCase.ListCategories(ctx, int(req.Limit), int(req.Offset))
+	categories, err := s.categoryUseCase.ListCategories(ctx, nil, int(req.Limit), int(req.Offset))
 	if err != nil {
 		return nil, err
 	}

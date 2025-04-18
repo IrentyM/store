@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"order-service/internal/domain"
 )
 
@@ -66,6 +67,32 @@ func (uc *OrderUseCase) UpdateOrder(ctx context.Context, id int, order domain.Or
 	}
 
 	return uc.orderRepo.Update(ctx, id, order)
+}
+
+func (uc *OrderUseCase) UpdateOrderStatus(ctx context.Context, id int32, status string, paystatus string) error {
+	if status == "" {
+		return fmt.Errorf("order status cannot be empty")
+	}
+	if paystatus == "" {
+		return fmt.Errorf("payment status cannot be empty")
+	}
+
+	order, _, err := uc.GetOrderByID(ctx, int(id))
+	if err != nil {
+		return fmt.Errorf("failed to fetch order: %w", err)
+	}
+	if order == nil {
+		return fmt.Errorf("order with ID %d not found", id)
+	}
+
+	order.Status = status
+	order.PaymentStatus = paystatus
+
+	if err := uc.orderRepo.Update(ctx, int(id), *order); err != nil {
+		return fmt.Errorf("failed to update order status: %w", err)
+	}
+
+	return nil
 }
 
 func (uc *OrderUseCase) DeleteOrder(ctx context.Context, id int) error {

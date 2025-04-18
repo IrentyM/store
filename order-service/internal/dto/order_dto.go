@@ -6,11 +6,11 @@ import (
 )
 
 type CreateOrderRequest struct {
-	UserID        int32                `json:"user_id"`
-	Status        domain.OrderStatus   `json:"status"`
-	PaymentStatus domain.PaymentStatus `json:"payment_status"`
-	TotalAmount   float64              `json:"total_amount"`
-	Items         []OrderItemRequest   `json:"items"`
+	UserID        int32              `json:"user_id"`
+	Status        string             `json:"status"`
+	PaymentStatus string             `json:"payment_status"`
+	TotalAmount   float64            `json:"total_amount"`
+	Items         []OrderItemRequest `json:"items"`
 }
 
 type OrderItemRequest struct {
@@ -40,14 +40,14 @@ func (r *CreateOrderRequest) ToDomain() (domain.Order, []domain.OrderItem) {
 }
 
 type OrderResponse struct {
-	ID            int32                `json:"id"`
-	UserID        int32                `json:"user_id"`
-	Status        domain.OrderStatus   `json:"status"`
-	PaymentStatus domain.PaymentStatus `json:"payment_status"`
-	TotalAmount   float64              `json:"total_amount"`
-	CreatedAt     time.Time            `json:"created_at"`
-	UpdatedAt     time.Time            `json:"updated_at"`
-	Items         []OrderItemResponse  `json:"items"`
+	ID            int32               `json:"id"`
+	UserID        int32               `json:"user_id"`
+	Status        string              `json:"status"`
+	PaymentStatus string              `json:"payment_status"`
+	TotalAmount   float64             `json:"total_amount"`
+	CreatedAt     time.Time           `json:"created_at"`
+	UpdatedAt     time.Time           `json:"updated_at"`
+	Items         []OrderItemResponse `json:"items"`
 }
 
 type OrderItemResponse struct {

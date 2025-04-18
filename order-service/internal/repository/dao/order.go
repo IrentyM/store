@@ -31,8 +31,8 @@ func FromOrder(order Order) domain.Order {
 	return domain.Order{
 		ID:            order.ID,
 		UserID:        order.UserID,
-		Status:        domain.OrderStatus(order.Status),
-		PaymentStatus: domain.PaymentStatus(order.PaymentStatus),
+		Status:        order.Status,
+		PaymentStatus: order.PaymentStatus,
 		TotalAmount:   order.TotalAmount,
 		CreatedAt:     order.CreatedAt,
 		UpdatedAt:     order.UpdatedAt,

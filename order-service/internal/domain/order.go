@@ -22,13 +22,13 @@ const (
 )
 
 type Order struct {
-	ID            int32         `json:"id"`
-	UserID        int32         `json:"user_id"`
-	Status        OrderStatus   `json:"status"`
-	PaymentStatus PaymentStatus `json:"payment_status"`
-	TotalAmount   float64       `json:"total_amount"`
-	CreatedAt     time.Time     `json:"created_at"`
-	UpdatedAt     time.Time     `json:"updated_at"`
+	ID            int32     `json:"id"`
+	UserID        int32     `json:"user_id"`
+	Status        string    `json:"status"`
+	PaymentStatus string    `json:"payment_status"`
+	TotalAmount   float64   `json:"total_amount"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }
 
 func (o *Order) Validate() error {

@@ -75,6 +75,20 @@ CREATE TABLE orders.order_items (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE orders.user_order_statistics (
+    user_id BIGINT PRIMARY KEY,
+    total_orders INT DEFAULT 0,
+    hourly_distribution JSONB DEFAULT '{}'
+);
+
+CREATE TABLE user_statistics (
+    user_id BIGINT PRIMARY KEY,
+    total_items_purchased INT DEFAULT 0,
+    average_order_value NUMERIC(10, 2) DEFAULT 0.0,
+    most_purchased_item TEXT,
+    total_completed_orders INT DEFAULT 0
+);
+
 CREATE OR REPLACE FUNCTION orders.update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN

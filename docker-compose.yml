@@ -85,6 +85,25 @@ services:
     environment:
       INVENTORY_SERVICE_URL: http://inventory-service:8010
       ORDER_SERVICE_URL: http://order-service:8020
+    
+  statistics-service:
+    build:
+      context: ./statistics-service
+    container_name: statistics-service
+    ports:
+      - "8004:8004"
+    environment:
+    depends_on:
+      - postgres
+      - nats
+
+  nats:
+    image: nats:latest
+    container_name: nats
+    ports:
+      - "4222:4222"
+    environment:
+      - NATS_SERVER=1
 
 volumes:
   pgdata:

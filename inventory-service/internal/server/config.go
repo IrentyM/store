@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -14,6 +15,9 @@ type Config struct {
 	DBuser     string
 	DBpassword string
 	DBname     string
+	RedisAddr  string
+	RedisPass  string
+	RedisDB    int
 }
 
 var ErrInvalidEnv = errors.New("invalid environment variables")
@@ -36,7 +40,6 @@ func GetDefaultConfig() *Config {
 		DBname:     "store",
 	}
 }
-
 func ParseEnvConfig() (*Config, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -50,11 +53,24 @@ func ParseEnvConfig() (*Config, error) {
 		dbUser     = os.Getenv("DB_USER")
 		dbPassword = os.Getenv("DB_PASSWORD")
 		dbName     = os.Getenv("DB_NAME")
+		redisAddr  = os.Getenv("REDIS_ADDR")
+		redisPass  = os.Getenv("REDIS_PASS")
+		redisDB    = os.Getenv("REDIS_DB")
 	)
 
 	if port == "" || dbHost == "" || dbPort == "" || dbUser == "" || dbPassword == "" || dbName == "" {
 		return nil, ErrInvalidEnv
 	}
+
+	// Default Redis values if not set
+	if redisAddr == "" {
+		redisAddr = "localhost:6379"
+	}
+	if redisDB == "" {
+		redisDB = "0"
+	}
+
+	dbNum, _ := strconv.Atoi(redisDB)
 
 	return &Config{
 		Port:       ":" + port,
@@ -63,5 +79,8 @@ func ParseEnvConfig() (*Config, error) {
 		DBuser:     dbUser,
 		DBpassword: dbPassword,
 		DBname:     dbName,
+		RedisAddr:  redisAddr,
+		RedisPass:  redisPass,
+		RedisDB:    dbNum,
 	}, nil
 }

@@ -16,7 +16,7 @@ func (s *server) registerRoutes() error {
 	orderRepo := repository.NewOrderRepository(database)
 	orderItemRepo := repository.NewOrderItemRepository(database)
 
-	orderUseCase := usecase.NewOrderUseCase(orderRepo, orderItemRepo)
+	orderUseCase := usecase.NewOrderUseCase(orderRepo, orderItemRepo, nil)
 
 	s.router.GET("/health", handler.GetHealth)
 

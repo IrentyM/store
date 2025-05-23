@@ -10,7 +10,11 @@ import (
 	"order-service/internal/usecase"
 	"order-service/pkg/db"
 	orderproto "order-service/proto/order"
+	"os"
 
+	natsadapter "order-service/internal/adapter/nats"
+
+	"github.com/nats-io/nats.go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -26,12 +30,20 @@ func New(config *server.Config) (*App, error) {
 		return nil, fmt.Errorf("postgresql: %w", err)
 	}
 
+	nc, err := nats.Connect(os.Getenv("NATS_URL"))
+	if err != nil {
+		log.Fatalf("Failed to connect to NATS: %v", err)
+	}
+	defer nc.Close()
+	log.Println("connected to nats", "url", os.Getenv("NATS_URL"))
+	publisher := natsadapter.NewOrderEventPublisher(nc)
+
 	grpcServer := grpc.NewServer()
 
 	orderRepo := repository.NewOrderRepository(database)
 	orderItemRepo := repository.NewOrderItemRepository(database)
 
-	orderUseCase := usecase.NewOrderUseCase(orderRepo, orderItemRepo)
+	orderUseCase := usecase.NewOrderUseCase(orderRepo, orderItemRepo, publisher)
 
 	orderHandler := grpchandler.NewOrderServer(*orderUseCase)
 

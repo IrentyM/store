@@ -3,18 +3,22 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"log"
+	natsadapter "order-service/internal/adapter/nats"
 	"order-service/internal/domain"
 )
 
 type OrderUseCase struct {
 	orderRepo     OrderRepository
 	orderItemRepo OrderItemRepository
+	publisher     *natsadapter.OrderEventPublisher
 }
 
-func NewOrderUseCase(orderRepo OrderRepository, orderItemRepo OrderItemRepository) *OrderUseCase {
+func NewOrderUseCase(orderRepo OrderRepository, orderItemRepo OrderItemRepository, publisher *natsadapter.OrderEventPublisher) *OrderUseCase {
 	return &OrderUseCase{
 		orderRepo:     orderRepo,
 		orderItemRepo: orderItemRepo,
+		publisher:     publisher,
 	}
 }
 
@@ -41,6 +45,10 @@ func (uc *OrderUseCase) CreateOrder(ctx context.Context, order domain.Order, ite
 		}
 	}
 
+	if err := uc.publisher.PublishOrderCreated(ctx, &order, items); err != nil {
+		log.Printf("Failed to publish order created event: %v", err)
+	}
+
 	return orderID, nil
 }
 
@@ -65,8 +73,15 @@ func (uc *OrderUseCase) UpdateOrder(ctx context.Context, id int, order domain.Or
 	if err := order.Validate(); err != nil {
 		return err
 	}
+	err := uc.orderRepo.Update(ctx, id, order)
+	if err != nil {
+		return err
+	}
 
-	return uc.orderRepo.Update(ctx, id, order)
+	// if err := uc.publisher.PublishOrderCreated(ctx, &order, items); err != nil {
+	// 	log.Printf("Failed to publish order created event: %v", err)
+	// }
+	return nil
 }
 
 func (uc *OrderUseCase) UpdateOrderStatus(ctx context.Context, id int32, status string, paystatus string) error {

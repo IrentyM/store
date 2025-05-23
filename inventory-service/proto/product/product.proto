@@ -13,11 +13,12 @@ service ProductService {
 }
 
 message CreateProductRequest {
-  string name = 1;
-  string description = 2;
-  double price = 3;
-  int32 stock = 4;
-  int32 category_id = 5;
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  int32 stock = 5;
+  int32 category_id = 6;
 }
 
 message GetProductRequest {

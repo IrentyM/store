@@ -26,6 +26,7 @@ func NewProductServer(productUseCase usecase.ProductUseCase) *productServer {
 
 func (s *productServer) CreateProduct(ctx context.Context, req *productproto.CreateProductRequest) (*productproto.ProductResponse, error) {
 	product := domain.Product{
+		ID:          req.Id,
 		Name:        req.Name,
 		Description: req.Description,
 		Price:       req.Price,

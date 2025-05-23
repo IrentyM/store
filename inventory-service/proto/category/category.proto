@@ -13,8 +13,9 @@ service CategoryService {
 }
 
 message CreateCategoryRequest {
-  string name = 1;
-  string description = 2;
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
 }
 
 message GetCategoryRequest {
